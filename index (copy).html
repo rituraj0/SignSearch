@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ember First</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    
+    <body>
+        <script type="text/x-handlebars" id="first-route" >
+            <p> Canvas here</p>
+            
+            
+            {{view MyApp.CanvasView}}
+            
+
+            <br>
+            <p> canvas above </p>
+
+            <h1> Enter Number  of dic to be rolled</h1><br>
+              <p> {{dicenum}} </p><br>
+              <p> {{input value=dicenum }} </p>
+              {{#each outputs as |item|}}
+                <li>{{item}}</li>
+              {{/each}}
+             {{outlet}}            
+        </script>  
+             
+
+        <script type="text/javascript" src="lib/jquery.js"></script>
+        <script type="text/javascript" src="lib/handlebars.js"></script>
+        <script type="text/javascript" src="lib/ember-template-compiler.js"></script>
+        <script type="text/javascript" src="lib/ember.debug.js"></script>
+        <script type="text/javascript" src="lib/ember.js"></script>
+        <script type="text/javascript" src="app.js"></script>
+    </body>
+</html>
