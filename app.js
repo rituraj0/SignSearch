@@ -50,14 +50,14 @@ MyApp.IndexRoute = Ember.Route.extend( {
      }
  });
 
-MyApp.CanvasView = Ember.View.extend({
+MyApp.FirstRouteView = Ember.View.extend({
     tagName: "canvas",        
     attributeBindings: ['height', 'width'],
     height: 500,
     width: 400,
 
     click: function(e){
-       alert(“clicked”);
+       alert("clicked");
        // do something
     },
 
@@ -69,6 +69,8 @@ MyApp.CanvasView = Ember.View.extend({
     drawItem: function(){
 
       console.log("going to piant");
+      var canvas = this.get('element');
+	  var ctx = canvas.getContext('2d');
 	   // Filled triangle
 	  ctx.beginPath();
 	  ctx.moveTo(25,25);
