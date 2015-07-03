@@ -50,11 +50,11 @@ MyApp.IndexRoute = Ember.Route.extend( {
      }
  });
 
-MyApp.FirstRouteView = Ember.View.extend({
+MyApp.abcd = Ember.View.extend({
     tagName: "canvas",        
     attributeBindings: ['height', 'width'],
-    height: 500,
-    width: 400,
+    height: 200,
+    width: 200,
 
     click: function(e){
        alert("clicked");
