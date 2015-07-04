@@ -1,52 +1,11 @@
 MyApp = Ember.Application.create();
 
 MyApp.Router.map( function() {
-
-	this.route('first-route' ,{path: 'first'}),
 	this.route('second-route' ,{path: 'second'})
-
  });
 
-MyApp.FirstRouteRoute = Ember.Route.extend( {
-
-
-});
 
 MyApp.SecondRouteRoute = Ember.Route.extend( {
-
-
-});
-
-MyApp.FirstRouteController = Ember.Controller.extend( {
-
-	firstname: 'hello',
-
-	dicenum: '10',
-
-	outputs: function() {
-
-		var randnum = [];
-
-		var tp=this.get('dicenum');
-		console.log("in controller");
-		console.log(tp);
-
-		if( tp === undefined)
-			 tp=5;
-		for( var x =1;x<=tp;x++)
-		{
-			randnum.push( Math.random() );
-		}
-
-		console.log(tp);
-
-		for( var x =0 ; x< tp ;x++)
-		{
-			console.log( randnum[x] );
-		}
-
-        return randnum;
-     }.property('dicenum')//if dicenum is changes , then reclalcuate outputs , watch vedio 18
 
 });
 
@@ -56,16 +15,11 @@ MyApp.IndexRoute = Ember.Route.extend( {
      }
  });
 
-/*
-MyApp.Points = Ember.Model.extend({
-
-	pointX : DS.attr('array'),
-	pointY : DS.attr('array'),
-});
-*/
 
 MyApp.SecondRouteController = Ember.Controller.extend({
 
+	paint: false,
+	last: 0,
 	pointX: [],
 	pointY: []
 	
@@ -74,89 +28,107 @@ MyApp.SecondRouteController = Ember.Controller.extend({
 MyApp.SecondRouteView = Ember.View.extend({
     tagName: "canvas",        
     attributeBindings: ['height', 'width'],
-    height: 200,
-    width: 200,
-
-    click: function(e){
-       //alert("clicked");
-       // do something
-       console.log("in click");
-    },
+    height: 300,
+    width: 500,
 
     mouseDown: function(e){
 
-    	console.log("mouse down");
+    	this.setValue("paint",true);
+        this.addClick(e.pageX,e.pageY);
+        this.addClick(e.pageX,e.pageY);
+        this.setValue( "last" , this.getValue("last")+1);
+        this.redraw();
     },
 
     mouseMove: function(e){
-    	console.log("mosue drag");
-    	console.log(e.pageX);
-    	console.log(e.pageY);
-
-    	this.insertPoint(e.pointX,e.pageY);
+    	
+        if( this.getValue("paint"))
+        {
+            this.addClick(e.pageX, e.pageY);
+            this.redraw();
+        }
     },
 
     mouseUp: function(e){
-    	console.log("mouse up");
+    	this.setValue("paint",false);
     },
 
-    mouseOut:function(e){
-    	console.log("MouseUp");
+    mouseOut: function(e){
+        this.setValue("paint",false);
+        this.addClick(e.pageX,e.pageY);
+        this.setValue( "last" , this.getValue("last")+1);
     },
 
     didInsertElement: function(){
-    	console.log("in didinsert evet");
-        this.drawItem();
+        this.redraw();
     },
 
-    insertPoint: function(x,y){
+    setValue: function( vari,val){
+    	var canv = this.get('controller');
+    	canv.set(vari, val);
+    },
 
-    	console.log("in insert function");
+    getValue: function(vari){
+    	var canv = this.get('controller');
+    	return canv.get(vari);
+    },
+
+    addClick: function(x,y){
 
     	var canv = this.get('controller');
 
-    	console.log(canv);
-
     	if( canv === undefined )
-    		console.log("undefines class");
-    	else
-    		console.log(" got someting");
+    		console.log("did not get controller");
 
-    	var xy = canv.get('pointX');
+    	var px = canv.get('pointX');
 
-        if( xy === undefined )
-    		console.log("undefines class");
-    	else
-    		console.log(" got someting in pointx");	
+        if( px === undefined )
+    		console.log("did not get X Array");
 
-    	xy.push(x);
+    	px.push(x);
 
-    	//.pointX.push(x);
+    	var py = canv.get('pointY');
 
-    	console.log("x inserted");
-    	//this.get('controller.controllers.Canvas.pointY').push(y);
-    	console.log("insrted");
+        if( py === undefined )
+    		console.log("did not get Y Array");
+
+    	py.push(y);
 
     },
 
-    drawItem: function(){
+    redraw: function(){        
+        
+        if( this.getValue("paint") )
+        {
+              var canvas = this.get('element');
+        	  var canvasContext = canvas.getContext('2d');
+        	  canvasContext.strokeStyle = "#df4b26";
+          	  canvasContext.lineJoin = "round";
+          	  canvasContext.lineWidth = 5;
 
-      console.log("going to piant");
-      var canvas = this.get('element');
-	  var ctx = canvas.getContext('2d');
-	   // Filled triangle
-	  ctx.beginPath();
-	  ctx.moveTo(25,25);
-	  ctx.lineTo(105,25);
-	  ctx.lineTo(25,105);
-	  ctx.fill();
+              pX=this.getValue("pointX");
+              pY=this.getValue("pointY");
 
-	  // Stroked triangle
-	  ctx.beginPath();
-	  ctx.moveTo(125,125);
-	  ctx.lineTo(125,45);
-	  ctx.lineTo(45,125);
-	  ctx.closePath();
-	  ctx.stroke();
- }
+              for( var i = this.getValue("last") ; i < pX.length ;i++)
+              {
+                    canvasContext.beginPath();
+
+                    if( i > 0)
+                    {
+                        canvasContext.moveTo( pX[i-1] , pY[i-1]);
+                    }
+                    else
+                    {
+                        canvasContext.moveTo( pX[i] - 1 , pY[i] );
+                    }
+
+                    canvasContext.lineTo( pX[i] , pY[i] );
+
+                    canvasContext.closePath();
+                    canvasContext.stroke();            
+              }
+
+              this.setValue("last", pX.length);
+        }
+    }
 });
