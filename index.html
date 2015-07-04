@@ -6,15 +6,18 @@
     </head>
     
     <body>
-        <script type="text/x-handlebars" id="first-route" >
-            <p> Canvas here</p>
+          <script type="text/x-handlebars" >
             
-
+            <p> Canvas Below</p>
             {{#view MyApp.abcd}}
             {{/view}}
 
-            
+            {{outlet}}
 
+          </script>
+        
+          <script type="text/x-handlebars" id="first-route" >
+            
             <br>
             <p> canvas above </p>
 
@@ -25,7 +28,7 @@
                 <li>{{item}}</li>
               {{/each}}
              {{outlet}}            
-        </script>  
+          </script>  
              
 
         <script type="text/javascript" src="lib/jquery.js"></script>
